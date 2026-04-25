@@ -21,6 +21,7 @@ The system has three layers:
 - **Testing Layer** (`tests/test_reliability.py`): Runs the AI coach through scripted scenarios and checks that responses are valid.
 
 ![System Architecture](assets/architecturedesign.png)
+
 ---
 
 ## Setup
@@ -111,10 +112,17 @@ The coaching task is pattern recognition — detecting binary search, random gue
 
 ---
 
-## Reflection
+## Ethics and Critical Reflection
 
-This project made it clear that building with AI is more about design than the model itself. How you structure your logic, how you handle edge cases, and how the output fits into the user experience matter more than picking the most powerful tool.
+**What are the limitations or biases in your system?**
+The Glitch Detective only recognizes four strategy patterns. Any behavior outside those gets generic advice. The detection thresholds were chosen manually and may not work well across all difficulty levels. There is also a bias toward binary search — the coach always nudges players toward it, even if a different approach might be more enjoyable.
 
-Adding logging was the most practical lesson. Being able to see every AI call in `glitch_detective.log` meant I could actually verify the system was working — not just assume it was. The reliability tests did the same thing: they gave me evidence instead of just a feeling.
+**Could your AI be misused, and how would you prevent that?**
+The game itself is low-risk, but the log file records every guess history. In a real app, logs should be stored securely and never include personally identifying information. The rule-based system is fully transparent and deterministic, which makes it easier to audit than a black-box model.
 
-If I extended this further, I'd add an end-of-game summary where the Glitch Detective gives a full breakdown of the player's strategy across all their guesses.
+**What surprised you during reliability testing?**
+The random guesser scenario was initially misclassified as binary search because the step sizes passed a loose threshold. Fixing it required rewriting the detection logic. It was a good reminder that even simple rule-based systems need edge case testing — not just the obvious happy-path scenarios.
+
+**Collaboration with AI during this project**
+Claude Code was used throughout to write code, debug errors, and organize the project. One helpful suggestion was separating game logic from the AI coach so the game keeps working even if the coach fails. One flawed suggestion involved an initial strategy detection algorithm that misclassified certain guess patterns — catching and fixing that bug through testing was one of the most valuable parts of the project.
+
