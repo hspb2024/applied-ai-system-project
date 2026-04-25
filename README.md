@@ -20,23 +20,6 @@ The system has three layers:
 - **AI Coach Layer** (`ai_coach.py`): After each valid guess, analyzes the guess history using rule-based pattern detection and returns a coaching tip. Every call is logged to `glitch_detective.log`.
 - **Testing Layer** (`tests/test_reliability.py`): Runs the AI coach through scripted scenarios and checks that responses are valid.
 
-```
-flowchart TD
-    A[Player] -->|enters guess| B[Streamlit UI\napp.py]
-    B -->|raw input| C[Logic Utils\nlogic_utils.py]
-    C -->|Win / Too High / Too Low| B
-    B -->|history, range, attempts left| D[AI Coach\nai_coach.py - rule-based]
-    D -->|coaching hint| B
-    B -->|displays outcome + hint| A
-    D -->|logs every call + response| F[(glitch_detective.log)]
-
-    G[Reliability Tester\ntest_reliability.py] -->|test scenarios| D
-    D -->|AI responses| G
-    G -->|pass / fail report| H[Developer]
-```
-
-![System Architecture](assets/architecture.png)
-
 ---
 
 ## Setup
