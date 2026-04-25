@@ -112,6 +112,12 @@ The coaching task is pattern recognition — detecting binary search, random gue
 
 ---
 
+## Short Reflection
+
+From this assignment, I have realized that implementing the AI is more about the context in which it is done rather than about the level of intelligence of the algorithm. Proper structuring of logic, edge case management, and the way the output feels like an intrinsic part of the process are more important than choosing the right tool. Keeping logs for all the decisions made by the AI turned out to be one of the most useful takeaways from this assignment because it turned my assumptions into data.
+
+---
+
 ## Ethics and Critical Reflection
 
 **What are the limitations or biases in your system?**
