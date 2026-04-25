@@ -2,7 +2,7 @@
 
 ## Original Project
 
-This project builds on **Game Glitch Investigator** from Module 1 of AI 110. The original was a broken number-guessing game built with Streamlit. The goal was to find and fix bugs — including flipped hints, off-by-one scoring, and broken state management. It focused on debugging skills and basic Streamlit structure.
+This project builds on **Game Glitch Investigator** from Module 1. The original was a broken number-guessing game built with Streamlit. The goal was to find and fix bugs — including flipped hints, off-by-one scoring, and broken state management. Once the game was fixed, we are able to reflect on the usage of AI to assist in our works.
 
 ---
 
