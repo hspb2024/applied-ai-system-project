@@ -20,6 +20,8 @@ The system has three layers:
 - **AI Coach Layer** (`ai_coach.py`): After each valid guess, analyzes the guess history using rule-based pattern detection and returns a coaching tip. Every call is logged to `glitch_detective.log`.
 - **Testing Layer** (`tests/test_reliability.py`): Runs the AI coach through scripted scenarios and checks that responses are valid.
 
+![System Architecture](assets/architecture.png)
+
 ---
 
 ## Setup
