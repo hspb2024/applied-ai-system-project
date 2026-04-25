@@ -1,5 +1,6 @@
 import random
 import streamlit as st
+import ai_coach
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -106,6 +107,9 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "coach_hint" not in st.session_state:
+    st.session_state.coach_hint = ""
+
 st.subheader("Make a guess")
 
 attempts_display = st.empty()
@@ -136,6 +140,7 @@ if new_game:
     st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
     st.session_state.history = []
+    st.session_state.coach_hint = ""
     st.success("New game started.")
     st.rerun()
 
@@ -182,6 +187,13 @@ if submit:
             attempt_number=st.session_state.attempts,
         )
 
+        st.session_state.coach_hint = ai_coach.get_coaching_hint(
+            history=st.session_state.history,
+            low=low,
+            high=high,
+            attempts_left=attempt_limit - st.session_state.attempts,
+        )
+
         if outcome == "Win":
             st.balloons()
             st.session_state.status = "won"
@@ -202,6 +214,11 @@ attempts_display.info(
     f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
+
+if st.session_state.coach_hint:
+    st.divider()
+    st.markdown("### 🔍 Glitch Detective Analysis")
+    st.info(st.session_state.coach_hint)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
