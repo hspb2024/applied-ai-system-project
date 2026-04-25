@@ -118,13 +118,16 @@ The coaching task is pattern recognition — detecting binary search, random gue
 
 The Glitch Detective is limited to four types of strategies. Anything that doesn’t fit the four receives the same general guidance. The criteria values for recognition were manually defined, and thus not universal to all difficulties. Moreover, there’s a clear bias toward binary search, which the AI suggests every time, regardless of whether another strategy could make the experience more fun.
 
+
 **Could your AI be misused, and how would you prevent that?**
 
 In the context of the game, there is no danger of misusing our AI. However, the log file stores guess history, so we had to take precautions. First, we made sure not to store any data that would identify a particular user. Second, our rule-based system is perfectly transparent, making auditing relatively easy.
 
+
 **What surprised you during reliability testing?**
 
 Initially, the random guesser behavior was classified as the binary search because the values of steps were above the chosen thresholds. To fix the error, new criteria had to be implemented. This particular problem showed that even simple systems require checking for edge cases besides happy paths.
+
 
 **Collaboration with AI during this project**
 
