@@ -2,13 +2,13 @@
 
 ## Original Project
 
-This project builds on **Game Glitch Investigator** from Module 1. The original was a broken number-guessing game built with Streamlit. The goal was to find and fix bugs — including flipped hints, off-by-one scoring, and broken state management. Once the game was fixed, we are able to reflect on the usage of AI to assist in our works.
+This project is an extension of **Game Glitch Investigator**, which was developed in Module 1. In the original project, there is a broken number-guessing game written using Streamlit. The task was to identify and debug the game's issues, such as misleading hints, incorrect scores, and faulty state management. Following debugging, we can assess how AI can help us in our endeavors.
 
 ---
 
 ## What This Project Does
 
-**Game Glitch Investigator: AI Coach Edition** adds a live strategy coach to the original game. After each guess, the **Glitch Detective** analyzes the player's guess history, classifies their strategy (binary search, random guessing, small increments), and gives a personalized coaching tip. It also includes a reliability testing suite to make sure the coach behaves consistently.
+**Game Glitch Investigator: AI Coach** integrates an AI coach that provides guidance after each guess made by the user. Based on the user’s past guesses, the **Glitch Detective** determines the type of strategy the user has employed (binary search, random guessing, or incrementing/decrementing by small values) and gives the user feedback.
 
 ---
 
@@ -37,7 +37,7 @@ cd applied-ai-system-project
 
 ```bash
 python -m venv venv
-source venv/bin/activate       # Mac/Linux
+source venv/bin/activate       # Linux
 venv\Scripts\activate          # Windows
 ```
 
@@ -53,13 +53,13 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### 5. Run unit tests (optional)
+### 5. (optional) If you want to run unit tests
 
 ```bash
 pytest tests/test_game_logic.py
 ```
 
-### 6. Run AI reliability tests (optional)
+### 6. (optional) If you want to run AI reliability tests 
 
 ```bash
 python tests/test_reliability.py
@@ -72,21 +72,21 @@ python tests/test_reliability.py
 **Example 1 — Random guesser**
 Guesses: `[10, 90, 33, 77]` | Range: 1–100 | 4 attempts left
 
-> "Your guesses look scattered — try a more structured approach. Pick the midpoint of what's still possible and cut the range in half each time. With 4 attempts left, every guess needs to count."
+> "It looks like your guesses are all over the place. Consider taking a more systematic approach. Select the midpoint of the current range and divide the range into two each time. Since you have four tries remaining, you have to make each one count."
 
 ---
 
 **Example 2 — Small stepper**
 Guesses: `[10, 11, 12, 13]` | Range: 1–100 | 4 attempts left
 
-> "Your steps are too small for the range 1-100. With 4 attempts left, you need to jump at least 12 numbers at a time. Be bold — small steps won't get you there in time."
+> "You are making too many small steps within the range of 1 to 100. At four tries remaining, you need to take at least 12 steps per guess. Take bigger steps, or you won't be able to do this in time."
 
 ---
 
 **Example 3 — Good binary search**
 Guesses: `[50, 75, 62]` | Range: 1–100 | 5 attempts left
 
-> "You're using binary search — the most efficient strategy here! With 5 attempts left, keep halving the remaining range and you'll get there."
+> "You are employing the use of binary search, which is the optimal solution for this scenario! You have five tries remaining; just continue dividing the current range in half."
 
 ---
 
@@ -108,21 +108,20 @@ The coaching task is pattern recognition — detecting binary search, random gue
 
 **Unit tests:** 18 tests across `test_game_logic.py` — all pass. Covers input parsing, difficulty ranges, guess outcomes, and scoring.
 
-**Reliability tests:** 5 scenarios run through the AI coach (binary searcher, random guesser, small stepper, first guess only, easy mode). Each response is checked for: non-empty output, reasonable length, and no raw error text. All 5 passed. Because the coach is rule-based with no external dependency, it runs reliably every time with no network or API failures possible.
+**Reliability tests:** 5 test cases are sent to the AI coach (binary search engine, random guesser, small-step solver, single guesser, easy level mode). Verified for: presence of output, logical output length, absence of error messages in plain text. All 5 succeeded. Since the coach operates on a set of predefined rules without any dependencies, it works flawlessly each time.
 
 ---
 
 ## Ethics and Critical Reflection
 
 **What are the limitations or biases in your system?**
-The Glitch Detective only recognizes four strategy patterns. Any behavior outside those gets generic advice. The detection thresholds were chosen manually and may not work well across all difficulty levels. There is also a bias toward binary search — the coach always nudges players toward it, even if a different approach might be more enjoyable.
+The Glitch Detective is limited to four types of strategies. Anything that doesn’t fit the four receives the same general guidance. The criteria values for recognition were manually defined, and thus not universal to all difficulties. Moreover, there’s a clear bias toward binary search, which the AI suggests every time, regardless of whether another strategy could make the experience more fun.
 
 **Could your AI be misused, and how would you prevent that?**
-The game itself is low-risk, but the log file records every guess history. In a real app, logs should be stored securely and never include personally identifying information. The rule-based system is fully transparent and deterministic, which makes it easier to audit than a black-box model.
+In the context of the game, there is no danger of misusing our AI. However, the log file stores guess history, so we had to take precautions. First, we made sure not to store any data that would identify a particular user. Second, our rule-based system is perfectly transparent, making auditing relatively easy.
 
 **What surprised you during reliability testing?**
-The random guesser scenario was initially misclassified as binary search because the step sizes passed a loose threshold. Fixing it required rewriting the detection logic. It was a good reminder that even simple rule-based systems need edge case testing — not just the obvious happy-path scenarios.
+Initially, the random guesser behavior was classified as the binary search because the values of steps were above the chosen thresholds. To fix the error, new criteria had to be implemented. This particular problem showed that even simple systems require checking for edge cases besides happy paths.
 
 **Collaboration with AI during this project**
-Claude Code was used throughout to write code, debug errors, and organize the project. One helpful suggestion was separating game logic from the AI coach so the game keeps working even if the coach fails. One flawed suggestion involved an initial strategy detection algorithm that misclassified certain guess patterns — catching and fixing that bug through testing was one of the most valuable parts of the project.
-
+Claude Code has been utilized in all stages of code writing, error correction, and project organization. One of the useful suggestions made by Claude is to separate the game logic and the AI coach to ensure the former functions properly despite any issues with the latter. A wrong suggestion is the use of an initial detection strategy for guesses which incorrectly classified some guessing patterns, but identifying and correcting the bug made testing worthwhile.
