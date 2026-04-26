@@ -1,5 +1,11 @@
 # Game Glitch Investigator — Applied AI System
 
+## Video Walkthrough
+
+[Watch the demo on Loom](https://www.loom.com/share/fea01c5c711743cca4feb77a5e535b7a)
+
+---
+
 ## Original Project
 
 This project is an extension of **Game Glitch Investigator**, which was developed in Module 1. In the original project, there is a broken number-guessing game written using Streamlit. The task was to identify and debug the game's issues, such as misleading hints, incorrect scores, and faulty state management. Following debugging, we can assess how AI can help us in our endeavors.
