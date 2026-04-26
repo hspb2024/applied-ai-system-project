@@ -15,11 +15,9 @@ def _detect_strategy(history: list, low: int, high: int, outcomes: list) -> str:
     if len(history) < 2:
         return "first_guess"
 
-    steps = [abs(history[i] - history[i - 1]) for i in range(1, len(history))]
-    avg_step = sum(steps) / len(steps)
     total_range = high - low
 
-    # Wrong direction: player moved opposite to what the last hint said
+    # Wrong direction: most recent move went opposite to the previous hint
     if len(outcomes) >= 2:
         prev_outcome = outcomes[-2]
         direction = history[-1] - history[-2]
@@ -28,22 +26,36 @@ def _detect_strategy(history: list, low: int, high: int, outcomes: list) -> str:
         if prev_outcome == "Too Low" and direction < 0:
             return "wrong_direction"
 
-    # Tiny increments: average step is less than 5% of the total range
+    # Correcting a wrong direction: the move before last was wrong but this one is right
+    if len(outcomes) >= 3 and len(history) >= 3:
+        two_back_outcome = outcomes[-3]
+        prev_direction = history[-2] - history[-3]
+        was_wrong = (two_back_outcome == "Too High" and prev_direction > 0) or \
+                    (two_back_outcome == "Too Low" and prev_direction < 0)
+        if was_wrong:
+            return "corrected"
+
+    # Use only the last 3 guesses so old wrong-direction moves don't pollute detection
+    recent = history[-3:] if len(history) >= 3 else history
+    recent_steps = [abs(recent[i] - recent[i - 1]) for i in range(1, len(recent))]
+    avg_step = sum(recent_steps) / len(recent_steps)
+
+    # Tiny increments
     if avg_step < total_range * 0.05:
         return "small_steps"
 
-    # Binary search: first guess near midpoint AND steps are decreasing
+    # Binary search: first guess near midpoint AND recent steps are decreasing
     mid = (low + high) / 2
     first_near_mid = abs(history[0] - mid) < total_range * 0.25
-    steps_decreasing = all(steps[i] >= steps[i + 1] for i in range(len(steps) - 1)) if len(steps) > 1 else True
+    steps_decreasing = all(recent_steps[i] >= recent_steps[i + 1] for i in range(len(recent_steps) - 1)) if len(recent_steps) > 1 else True
     if first_near_mid and steps_decreasing:
         return "binary_search"
 
-    # Random: high variance in step sizes
-    mean_step = avg_step
-    variance = sum((s - mean_step) ** 2 for s in steps) / len(steps)
-    if variance > (total_range * 0.15) ** 2:
-        return "random"
+    # Random: high variance in recent steps
+    if len(recent_steps) >= 2:
+        variance = sum((s - avg_step) ** 2 for s in recent_steps) / len(recent_steps)
+        if variance > (total_range * 0.15) ** 2:
+            return "random"
 
     return "general"
 
@@ -64,7 +76,13 @@ def get_coaching_hint(history: list, low: int, high: int, attempts_left: int, ou
         history, low, high, attempts_left, strategy,
     )
 
-    if strategy == "wrong_direction":
+    if strategy == "corrected":
+        hint = (
+            "Good adjustment. You corrected your direction after the previous guess. "
+            f"With {attempts_left} attempts remaining, keep following the hints and narrow the range down systematically."
+        )
+
+    elif strategy == "wrong_direction":
         hint = (
             "That guess moved in the opposite direction of the hint you were given. "
             "Pay close attention to the feedback after each guess and adjust accordingly. "

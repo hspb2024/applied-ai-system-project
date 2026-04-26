@@ -192,13 +192,15 @@ if submit:
             attempt_number=st.session_state.attempts,
         )
 
-        st.session_state.coach_hint = ai_coach.get_coaching_hint(
-            history=st.session_state.history,
-            low=low,
-            high=high,
-            attempts_left=attempt_limit - st.session_state.attempts,
-            outcomes=st.session_state.outcomes,
-        )
+        attempts_left = attempt_limit - st.session_state.attempts
+        if attempts_left > 0:
+            st.session_state.coach_hint = ai_coach.get_coaching_hint(
+                history=st.session_state.history,
+                low=low,
+                high=high,
+                attempts_left=attempts_left,
+                outcomes=st.session_state.outcomes,
+            )
 
         if outcome == "Win":
             st.balloons()
