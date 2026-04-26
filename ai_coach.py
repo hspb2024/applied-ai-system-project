@@ -10,7 +10,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def _detect_strategy(history: list, low: int, high: int) -> str:
+def _detect_strategy(history: list, low: int, high: int, outcomes: list) -> str:
     """Classify the player's guessing pattern."""
     if len(history) < 2:
         return "first_guess"
@@ -18,6 +18,15 @@ def _detect_strategy(history: list, low: int, high: int) -> str:
     steps = [abs(history[i] - history[i - 1]) for i in range(1, len(history))]
     avg_step = sum(steps) / len(steps)
     total_range = high - low
+
+    # Wrong direction: player moved opposite to what the last hint said
+    if len(outcomes) >= 2:
+        prev_outcome = outcomes[-2]
+        direction = history[-1] - history[-2]
+        if prev_outcome == "Too High" and direction > 0:
+            return "wrong_direction"
+        if prev_outcome == "Too Low" and direction < 0:
+            return "wrong_direction"
 
     # Tiny increments: average step is less than 5% of the total range
     if avg_step < total_range * 0.05:
@@ -39,7 +48,7 @@ def _detect_strategy(history: list, low: int, high: int) -> str:
     return "general"
 
 
-def get_coaching_hint(history: list, low: int, high: int, attempts_left: int) -> str:
+def get_coaching_hint(history: list, low: int, high: int, attempts_left: int, outcomes: list = None) -> str:
     """
     Analyze the player's guess history and return a strategic coaching tip.
     Uses rule-based pattern detection — no API required.
@@ -47,7 +56,7 @@ def get_coaching_hint(history: list, low: int, high: int, attempts_left: int) ->
     if not history:
         return ""
 
-    strategy = _detect_strategy(history, low, high)
+    strategy = _detect_strategy(history, low, high, outcomes or [])
     total_range = high - low
 
     logger.info(
@@ -55,7 +64,14 @@ def get_coaching_hint(history: list, low: int, high: int, attempts_left: int) ->
         history, low, high, attempts_left, strategy,
     )
 
-    if strategy == "first_guess":
+    if strategy == "wrong_direction":
+        hint = (
+            "That guess moved in the opposite direction of the hint you were given. "
+            "Pay close attention to the feedback after each guess and adjust accordingly. "
+            f"With {attempts_left} attempts remaining, moving in the right direction is essential."
+        )
+
+    elif strategy == "first_guess":
         mid = (low + high) // 2
         if history[0] == mid:
             hint = (

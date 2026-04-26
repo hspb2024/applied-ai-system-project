@@ -110,6 +110,9 @@ if "history" not in st.session_state:
 if "coach_hint" not in st.session_state:
     st.session_state.coach_hint = ""
 
+if "outcomes" not in st.session_state:
+    st.session_state.outcomes = []
+
 st.subheader("Make a guess")
 
 attempts_display = st.empty()
@@ -141,6 +144,7 @@ if new_game:
     st.session_state.status = "playing"
     st.session_state.history = []
     st.session_state.coach_hint = ""
+    st.session_state.outcomes = []
     st.success("New game started.")
     st.rerun()
 
@@ -177,6 +181,7 @@ if submit:
         secret = st.session_state.secret
 
         outcome, message = check_guess(guess_int, secret)
+        st.session_state.outcomes.append(outcome)
 
         if show_hint:
             st.warning(message)
@@ -192,6 +197,7 @@ if submit:
             low=low,
             high=high,
             attempts_left=attempt_limit - st.session_state.attempts,
+            outcomes=st.session_state.outcomes,
         )
 
         if outcome == "Win":
